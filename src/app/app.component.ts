@@ -33,8 +33,31 @@ import { InventoryPanelComponent } from './ui/inventory-panel/inventory-panel.co
     </div>
   `,
   styles: [`
-    :host { display:block; min-height:100vh; background:#06070c; }
-    .stage { position:relative; width:min(960px,100vw); margin:0 auto; aspect-ratio:16/9; }
+    /* Center the stage in the viewport on both axes so the letterboxed game
+       sits in the middle of any screen instead of pinned to the top. */
+    :host { display:flex; align-items:center; justify-content:center;
+            min-height:100vh; min-height:100dvh; background:#06070c; }
+
+    /* SAFE AREA / FIT:
+       The 16:9 stage is sized to the LARGEST rectangle that fits inside the
+       visible viewport in BOTH dimensions, minus device safe-area insets
+       (notch, rounded corners, home indicator). We take the min of:
+         - 960px                     -> never upscale past native width
+         - safe viewport width       -> fits horizontally (portrait limiter)
+         - safe viewport height x16/9 -> fits vertically   (landscape limiter)
+       aspect-ratio then derives the height. 100dvh tracks the mobile browser's
+       dynamic toolbar so nothing spills under it. The first width line is a
+       fallback for browsers without dvh support. */
+    .stage {
+      position:relative;
+      aspect-ratio:16 / 9;
+      width:min(960px, 100vw, calc(100vh * 16 / 9));
+      width:min(
+        960px,
+        calc(100vw  - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)),
+        calc((100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)) * 16 / 9)
+      );
+    }
   `],
 })
 export class AppComponent {
