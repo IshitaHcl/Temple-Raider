@@ -1,0 +1,6 @@
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; height: 100%; background: #06070c;
+             overscroll-behavior: none; -webkit-user-select: none; user-select: none;
+             -webkit-tap-highlight-color: transparent; }
+body { display: flex; align-items: center; justify-content: center; touch-action: manipulation; }
+::selection { background: #ffe27a; color: #06070c; }
